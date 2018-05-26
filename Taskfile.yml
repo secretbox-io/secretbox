@@ -1,0 +1,13 @@
+version: '2'
+
+tasks:
+  build:
+    cmds:
+      - vgo build -ldflags "-X main.CommitHash={{.GIT_COMMIT}} -X main.BuildTime={{.BUILD_TIME}} -X main.Version={{.GIT_TAG}}" secretbox.go
+    vars:
+      GIT_COMMIT:
+        sh: git rev-parse HEAD
+      BUILD_TIME:
+        sh: date --utc +%FT%TZ
+      GIT_TAG:
+        sh: git tag -l | head -n 1
