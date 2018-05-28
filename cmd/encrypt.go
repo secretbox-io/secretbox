@@ -3,7 +3,6 @@ package cmd
 import (
 	"io/ioutil"
 	"os"
-	"sync"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -11,11 +10,6 @@ import (
 
 func init() {
 	rootCmd.AddCommand(encryptCmd)
-}
-
-type encryptStatus struct {
-	numFiles int
-	sync.Once
 }
 
 var encryptCmd = &cobra.Command{
@@ -26,16 +20,13 @@ var encryptCmd = &cobra.Command{
 		log.SetFormatter(&log.TextFormatter{
 			DisableTimestamp: true,
 		})
-		log.SetLevel(log.DebugLevel)
-		text, err := ioutil.ReadAll(os.Stdin)
+
+		_, err := ioutil.ReadAll(os.Stdin)
 		if err != nil || len(args) == 0 {
 			log.Fatal("secretbox: failed to encrypt file on git commit - run `secretbox setup` to ensure that your encryption keys are set up.")
 		}
-		log.WithFields(log.Fields{
-			"command": "encrypt",
-			"file":    args[0],
-		}).Debugf("starting encryption")
 
 		log.Printf("secretbox: encrypting %s\n", args[0])
+
 	},
 }
