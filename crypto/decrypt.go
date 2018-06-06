@@ -5,7 +5,7 @@ import "golang.org/x/crypto/nacl/secretbox"
 // Decrypter is fulfilled by a provider to look up data encryption keys and decrypt contents
 type Decrypter interface {
 	DecryptionKeyProvider
-	Decrypt(cipherText []byte, dataEncryptionKey []byte) ([]byte, error)
+	Decrypt(encrypted []byte, dataEncryptionKey []byte) ([]byte, error)
 }
 
 // Decrypt an encrypted NaCl Secretbox encoded message

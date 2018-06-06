@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// CreateMasterKey creates a customer master key in AWS at the given alias path.  Paths are of the form
+// secretbox/<project>/<environment>.  The default key is located at path secretbox/*/production.
 func (p AWSProvider) CreateMasterKey(path string) (string, error) {
 	client := kms.New(p.cfg)
 
@@ -46,7 +48,8 @@ func (p AWSProvider) CreateMasterKey(path string) (string, error) {
 	return alias, nil
 }
 
-func (p AWSProvider) CheckKeyConfig(path string) (bool, error) {
+// KeyExists checks to see if the key located at path exists
+func (p AWSProvider) KeyExists(path string) (bool, error) {
 	client := kms.New(p.cfg)
 	req := client.DescribeKeyRequest(&kms.DescribeKeyInput{
 		KeyId: aws.String(aliasPath(path)),

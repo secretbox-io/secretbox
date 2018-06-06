@@ -136,3 +136,8 @@ func getHome() (string, error) {
 	}
 	return expand, nil
 }
+
+// GetHomeDir returns the home directory based on OS type
+func GetHomeDir() (string, error) {
+	return getHome()
+}
