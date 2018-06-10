@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func encryptCmd(c *config.Config) *cobra.Command {
-
+func encryptCmd() *cobra.Command {
+	c := config.MustRead()
 	p := getProvider(c)
 
 	return &cobra.Command{

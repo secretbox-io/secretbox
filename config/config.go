@@ -18,13 +18,21 @@ const (
 	AWS Provider = "aws"
 )
 
-// T represents the TOML configuration, not all of which may be set.  Prefer Config with contains an embedded ConfigT
+// T represents the TOML configuration, not all of which may be set.  Prefer Config with contains an embedded T
 // with additional metadata about which values were set in the file.
 type T struct {
-	Email    string
-	Token    string
-	Provider Provider
-	Keys     []Key
+	Email       string
+	Token       string
+	Provider    Provider
+	Credentials []Credentials
+	Keys        []Key
+}
+
+// Credentials represents a set of credentials to access a cloud service via the SDK
+type Credentials struct {
+	Profile string
+	Access  string
+	Secret  string
 }
 
 // Key is a customer master key in the could providers KMS.  ID should be sufficient to look up this particular key, with optional
@@ -62,7 +70,8 @@ func New(email string, token string, provider Provider, keys ...Key) (*Config, e
 }
 
 // Read will read the config file located at `%HOME%/.secretbox/config.toml` and return a populated Config
-// and metadata bout what values were explicitly set.`
+// and metadata bout what values were explicitly set.` If the config file does not exist, the config returned
+// is nil.
 func Read() (*Config, error) {
 	cfgFile, err := getConfigFileName()
 	if err != nil {
@@ -72,13 +81,23 @@ func Read() (*Config, error) {
 	var cfg T
 	md, err := toml.DecodeFile(cfgFile, &cfg)
 	if err != nil {
-		log.Fatal("could not read configuration file.  Try running `secretbox login` first.")
+		return nil, errors.Wrap(err, "could not read configuration file")
 	}
 
 	return &Config{
 		cfg,
 		md,
 	}, nil
+}
+
+// MustRead reads the config file located at `%HOME%/.secretbox/config.toml`.  If the config file does not exist, exits
+// with an error.
+func MustRead() *Config {
+	cfg, err := Read()
+	if err != nil {
+		log.Fatal("Could not read configuration file.  Try running `secretbox login` first.")
+	}
+	return cfg
 }
 
 func (c *Config) Write() error {

@@ -38,10 +38,8 @@ func getProvider(c *config.Config) providers.Provider {
 
 func Execute() {
 
-	cfg, _ := config.Read()
-
 	rootCmd.AddCommand(
-		encryptCmd(cfg),
+		encryptCmd(),
 	)
 
 	if err := rootCmd.Execute(); err != nil {

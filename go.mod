@@ -1,6 +1,7 @@
 module github.com/secretbox-io/secretbox
 
 require (
+	github.com/BTBurke/clt v1.0.1
 	github.com/BTBurke/go-homedir v1.0.0
 	github.com/BurntSushi/toml v0.3.0
 	github.com/aws/aws-sdk-go v1.13.60

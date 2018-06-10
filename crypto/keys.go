@@ -2,11 +2,18 @@ package crypto
 
 import "context"
 
+// Keyset represents a pair of a data encryption key and the associated DEK encrypted
+// with a customer master key
+type Keyset struct {
+	DEK          []byte
+	EncryptedDEK []byte
+}
+
 // EncryptionKeyProvider is fulfilled by a provider to generate data encryption keys given a customer master key
 // specified by keyID
 type EncryptionKeyProvider interface {
-	GenerateDataKey(keyID string) ([]byte, error)
-	GenerateDataKeyContext(ctx context.Context, keyID string) ([]byte, error)
+	GenerateDataKey(keyID string) (*Keyset, error)
+	GenerateDataKeyContext(ctx context.Context, keyID string) (*Keyset, error)
 }
 
 // DecryptionKeyProvider is fulfilled by a provider to decrypt data encryption keys given a customer master key
